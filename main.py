@@ -1,3 +1,4 @@
+import asyncio
 import time
 import board
 #import simpleio
@@ -129,6 +130,24 @@ def main():
 
 
     # move_forward(motors,5)
+
+
+pin = digitalio.DigitalInOut(board.D2)
+pin.direction = digitalio.Direction.INPUT
+pin.pull = digitalio.Pull.DOWN
+
+async def watch_pin():
+    last_value = pin.value
+    while True:
+        current_value = pin.value
+        if current_value and not last_value:
+            print("Rising edge detected!")
+        elif not current_value and last_value:
+            print("Falling edge detected!")
+        last_value = current_value
+        await asyncio.sleep(0.001)
+
+asyncio.run(watch_pin())
 
 
 
