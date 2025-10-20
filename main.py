@@ -34,101 +34,133 @@ def motor_setup():
     enb2.duty_cycle = 0
 
     # Motor rotational direction
-    motorRa.value = True
-    motorRb.value = False
-    motorLa.value = True
-    motorLb.value = False
-
-
     motorRa.value, motorRb.value = CLOCKWISE
-    motorLa.value, motorLb.value = COUNTERCLOCKWISE
-    # Set duty cycle for motors
-    enb1.duty_cycle = 65000
-    enb2.duty_cycle = 65000
-    # Sleep for specified time
-    time.sleep(5)
-    # Stop motors after specified time
-    enb1.duty_cycle = 0
-    enb2.duty_cycle = 0
+    motorLa.value, motorLb.value = CLOCKWISE
 
     return [[motorRa, motorRb], [motorLa, motorLb],[enb1,enb2]]
 
+"""
 # Functions for movement
 def move_forward(motors,time_seconds):
     motors[0][0].value, motors[0][1].value = CLOCKWISE
-    motors[1][0].value, motors[1][1].value = COUNTERCLOCKWISE
-    # motorRa.value, motorRb.value = CLOCKWISE
-    # motorLa.value, motorLb.value = CLOCKWISE
+    motors[1][0].value, motors[1][1].value = CLOCKWISE
+
     # Set duty cycle for motors
     motors[2][0].duty_cycle = 65000
     motors[2][1].duty_cycle = 65000
-    #enb1.duty_cycle = 65000
-    #enb2.duty_cycle = 65000
+
+    # Sleep for specified time
+    time.sleep(time_seconds)
+
+    # Stop motors after specified time
+    motors[2][0].duty_cycle = 0
+    motors[2][1].duty_cycle = 0
+
+"""
+def stop_motors(motors):
+    motors[2][0].duty_cycle = 0
+    motors[2][1].duty_cycle = 0
+
+def move_forward(motors):
+    motors[0][0].value, motors[0][1].value = CLOCKWISE
+    motors[1][0].value, motors[1][1].value = CLOCKWISE
+    motors[2][0].duty_cycle = 65000
+    motors[2][1].duty_cycle = 65000
+
+
+def move_backwards(motors,time_seconds):
+    motors[0][0].value, motors[0][1].value = COUNTERCLOCKWISE
+    motors[1][0].value, motors[1][1].value = COUNTERCLOCKWISE
+
+    # Set duty cycle for motors
+    motors[2][0].duty_cycle = 65000
+    motors[2][1].duty_cycle = 65000
+
+    # Sleep for specified time
+    time.sleep(time_seconds)
+
+    # Stop motors after specified time
+    motors[2][0].duty_cycle = 0
+    motors[2][1].duty_cycle = 0
+
+def turn_right(motors,time_seconds):
+    #set direction
+    motors[0][0].value, motors[0][1].value = COUNTERCLOCKWISE
+    motors[1][0].value, motors[1][1].value = CLOCKWISE
+
+    # Set duty cycle for motors
+    motors[2][0].duty_cycle = 65000
+    motors[2][1].duty_cycle = 65000
+
+    # Sleep for specified time
+    time.sleep(time_seconds)
+
+    # Stop motors after specified time
+    motors[2][0].duty_cycle = 0
+    motors[2][1].duty_cycle = 0
+
+def turn_left(motors,time_seconds):
+    #set direction
+    motors[0][0].value, motors[0][1].value = CLOCKWISE
+    motors[1][0].value, motors[1][1].value = COUNTERCLOCKWISE
+
+    # Set duty cycle for motors
+    motors[2][0].duty_cycle = 65000
+    motors[2][1].duty_cycle = 65000
+
     # Sleep for specified time
     time.sleep(time_seconds)
     # Stop motors after specified time
     motors[2][0].duty_cycle = 0
     motors[2][1].duty_cycle = 0
-    #enb1.duty_cycle = 0
-    #enb2.duty_cycle = 0
-    print("hello")
 
-def move_backwards(time_seconds):
-    motorRa.value, motorRb.value = COUNTERCLOCKWISE
-    motorLa.value, motorLb.value = COUNTERCLOCKWISE
-    # Set duty cycle for motors
-    enb1.duty_cycle = 65000
-    enb2.duty_cycle = 65000
-    # Sleep for specified time
-    time.sleep(time_seconds)
-    # Stop motors after specified time
-    enb1.duty_cycle = 0
-    enb2.duty_cycle = 0
+def encoder_init():
+    # Declare break sensor pins
+    encoder = digitalio.DigitalInOut(board.GP16)
+    encoder.direction = digitalio.Direction.INPUT
+    encoder.pull = digitalio.Pull.DOWN
 
-def turn_right(time_seconds):
-    motorRa.value, motorRb.value = CLOCKWISE
-    motorLa.value, motorLb.value = COUNTERCLOCKWISE
-    # Set duty cycle for motors
-    enb1.duty_cycle = 65000
-    enb2.duty_cycle = 65000
-    # Sleep for specified time
-    time.sleep(time_seconds)
-    # Stop motors after specified time
-    enb1.duty_cycle = 0
-    enb2.duty_cycle = 0
+    return encoder
 
-def turn_left(time_seconds):
-    motorRa.value, motorRb.value = COUNTERCLOCKWISE
-    motorLa.value, motorLb.value = CLOCKWISE
-    # Set duty cycle for motors
-    enb1.duty_cycle = 65000
-    enb2.duty_cycle = 65000
-    # Sleep for specified time
-    time.sleep(time_seconds)
-    # Stop motors after specified time
-    enb1.duty_cycle = 0
-    enb2.duty_cycle = 0
-
-def encoder():
-    # Declare encoder pins
-    encoder1 = digitalio.DigitalInOut(board.GP27)
-    encoder1.direction = digitalio.Direction.OUTPUT
-
-    encoder2 = digitalio.DigitalInOut(board.GP26)
-    encoder2.direction = digitalio.Direction.OUTPUT
-
-    while True:
-        print(encoder1.value, encoder2.value)
-        time.sleep(0.01)
 
 def main():
     #instantiate_OLED()
     #sense_distance()
     #break_sensor()
     motors = motor_setup()
+    encoder = encoder_init()
 
 
-    # move_forward(motors,5)
+    move_forward(motors)
+    enum = 0
+    while(True):
+        time.sleep(0.01)
+        print(enum)
+        enum+=1
+        print(encoder.value)
+
+    move_duration = 4  # seconds
+    print_interval = 0.01  # seconds
+
+    start_time = time.monotonic()
+    last_print = start_time
+
+    # Start moving forward
+    move_forward(motors)
+
+    while True:
+        now = time.monotonic()
+
+        # Print encoder value every 0.01 seconds
+        if now - last_print >= print_interval:
+            print("Encoder:", encode.value)
+            last_print = now
+
+        # Stop motors after move_duration seconds
+        if now - start_time >= move_duration:
+            stop_motors(motors)
+            break  # exit loop (or keep looping if you want)
+
 
 
 
