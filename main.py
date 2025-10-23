@@ -11,6 +11,14 @@ import busio
 CLOCKWISE = (True, False)  # FORWARD
 COUNTERCLOCKWISE = (False, True)  # BACKWARD
 
+# Encoder pins
+ENCODER_1A = board.GP16
+ENCODER_1B = board.GP17
+ENCODER_2A = board.GP18
+ENCODER_2B = board.GP19
+
+encoder1_position = 0
+encoder2_position = 0
 
 def motor_setup():
     # Declaring the motor pins
@@ -115,7 +123,7 @@ def turn_left(motors,time_seconds):
     motors[2][0].duty_cycle = 0
     motors[2][1].duty_cycle = 0
 
-def encoder_init():
+def encoder_pin_init(pin):
     # Declare break sensor pins
     encoder = digitalio.DigitalInOut(board.GP16)
     encoder.direction = digitalio.Direction.INPUT
@@ -123,22 +131,28 @@ def encoder_init():
 
     return encoder
 
+async def monitor_encoder(pin1, pin2, counter):
+    last_value1 = pin1.value
+    last_value2 = pin2.value
+    while True:
+        current_value1 = pin1.value
+        current_value2 = pin2.value
+        if current_value1 and current_value2:
+            if not last_value1:
+                counter += 1
+            if not last_value2:
+                counter -= 2
+        last_value1 = current_value1
+        last_value2 = current_value2
+        await asyncio.sleep(0.001)
 
 def main():
     #instantiate_OLED()
     #sense_distance()
     #break_sensor()
     motors = motor_setup()
-    encoder = encoder_init()
-
-
-    move_forward(motors)
-    enum = 0
-    while(True):
-        time.sleep(0.01)
-        print(enum)
-        enum+=1
-        print(encoder.value)
+    asyncio.run(monitor_encoder(encoder_pin_init(ENCODER_1A), encoder_pin_init(ENCODER_1B), encoder1_position))
+    asyncio.run(monitor_encoder(encoder_pin_init(ENCODER_2A), encoder_pin_init(ENCODER_2B), encoder2_position))
 
     move_duration = 4  # seconds
     print_interval = 0.01  # seconds
