@@ -1,4 +1,4 @@
-import board
+import board # type: ignore
 import motor
 import encoder
 
