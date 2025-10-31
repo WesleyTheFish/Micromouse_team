@@ -1,5 +1,4 @@
-import digitalio
-import board
+import digitalio # type: ignore
 
 class Encoder:
     def __init__(self, port):
@@ -9,8 +8,3 @@ class Encoder:
 
     def read(self):
         return self.encoder.value
-    
-
-   
-
-    

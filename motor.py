@@ -1,5 +1,5 @@
-import digitalio
-import pwmio
+import digitalio # type: ignore
+import pwmio # type: ignore
 
 
 class Motor:
