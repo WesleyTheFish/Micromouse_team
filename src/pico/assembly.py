@@ -2,6 +2,7 @@ import board # type: ignore
 import motor
 import encoder
 import imu
+import distance_sensor
 
 # Define directions
 CLOCKWISE = (True, False)  # FORWARD
@@ -19,6 +20,9 @@ class Assembly:
 
         # IMU
         self.imu = imu.IMU()
+
+        # Distance Sensor
+        self.distance = distance_sensor.DistanceSensor(board.GP12, board.GP13)
 
 
 
