@@ -1,11 +1,12 @@
 import board # type: ignore
 import adafruit_bno055 # type: ignore
+import busio # type: ignore
 
 
 class IMU:    
     def __init__(self):
         try:
-            i2c = board.I2C()
+            i2c = busio.I2C(sda=board.GP14,scl=board.GP15)
             sensor = adafruit_bno055.BNO055_I2C(i2c)
             return sensor
         except (RuntimeError, ValueError) as error:
