@@ -1,10 +1,11 @@
 #OLED
-import adafruit_displayio_ssd1306
-import displayio
-from adafruit_display_text import label
-from adafruit_bitmap_font import bitmap_font
-import terminalio
-import board
+import adafruit_displayio_ssd1306 # type: ignore
+import displayio # type: ignore
+from adafruit_display_text import label # type: ignore
+from adafruit_bitmap_font import bitmap_font # type: ignore
+import terminalio # type: ignore
+import board # type: ignore
+import busio # type: ignore
 
 def instantiate_OLED():
     displayio.release_displays()
