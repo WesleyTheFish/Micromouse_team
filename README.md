@@ -37,9 +37,10 @@ This README briefly describes what each folder does, how to run the simulator, k
 		 - `code.py` — a short demo script that instantiates `Assembly` and runs a brief forward/back motion.
 	 - Notes: This code targets CircuitPython on a Pico and depends on Adafruit libraries (e.g., `adafruit_bno055`, `adafruit_vl53l1x`, `adafruit_displayio_ssd1306`). It is prototype-level and requires small fixes to run on hardware.
 
-Component Usage
-----
-- IMU Fields
+## Component Usage
+
+### IMU 
+- Accessible Fields
 	- **temperature** - The sensor temperature in degrees Celsius.
 	- **acceleration** - This is a 3-tuple of X, Y, Z axis accelerometer values in meters per second squared.
 	- **magnetic** - This is a 3-tuple of X, Y, Z axis magnetometer values in microteslas.
@@ -48,6 +49,15 @@ Component Usage
 	- **quaternion** - This is a 4-tuple of orientation quaternion values.
 	- **linear_acceleration** - This is a 3-tuple of X, Y, Z linear acceleration values (i.e. without effect of gravity) in meters per second squared.
 	- **gravity** - This is a 3-tuple of X, Y, Z gravity acceleration values (i.e. without the effect of linear acceleration) in meters per second squared.
+
+### ToF Sensor
+
+### OLED Display
+
+### DC Motors
+
+### Encoders
+
 
 Known issues (pico code)
 ------------------------
