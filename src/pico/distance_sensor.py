@@ -1,5 +1,5 @@
-import adafruit_vl53l1x
-import busio
+import adafruit_vl53l1x # type: ignore
+import busio # type: ignore
 
 class DistanceSensor:
     def __init__(self, sda, slc):

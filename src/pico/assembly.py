@@ -19,7 +19,7 @@ class Assembly:
         self.left_encoder = encoder.Encoder(board.GP16)
 
         # IMU
-        self.imu = imu.IMU()
+        self.imu = imu.IMU(board.GP14, board.GP15)
 
         # Distance Sensor
         self.distance = distance_sensor.DistanceSensor(board.GP12, board.GP13)
