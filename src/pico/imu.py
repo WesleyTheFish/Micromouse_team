@@ -1,5 +1,5 @@
-import board
-import adafruit_bno055
+import board # type: ignore
+import adafruit_bno055 # type: ignore
 
 
 class IMU:    

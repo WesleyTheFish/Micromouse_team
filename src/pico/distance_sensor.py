@@ -1,6 +1,8 @@
 #Time of flight
-import adafruit_vl53l1x
-import board
+import adafruit_vl53l1x # type: ignore
+import board # type: ignore
+import busio # type: ignore
+import time
 
 def sense_distance():
 
