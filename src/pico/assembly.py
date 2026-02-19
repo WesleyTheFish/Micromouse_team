@@ -15,14 +15,14 @@ class Assembly:
         self.motor_left = motor.Motor(board.GP4, board.GP5, board.GP7)
 
         # Encoders
-        self.right_encoder = encoder.Encoder(board.GP18)
-        self.left_encoder = encoder.Encoder(board.GP16)
+        self.right_encoder = encoder.Encoder(board.GP18, board.GP19)
+        self.left_encoder = encoder.Encoder(board.GP12, board.GP13)
 
         # IMU
         self.imu = imu.IMU(board.GP14, board.GP15)
 
         # Distance Sensor
-        self.distance = distance_sensor.DistanceSensor(board.GP12, board.GP13)
+        self.distance = distance_sensor.DistanceSensor(board.GP10, board.GP11)
 
 
 

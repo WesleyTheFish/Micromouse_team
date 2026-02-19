@@ -1,10 +1,10 @@
 import time
 import assembly
+import asyncio
 
-
-def main():
-    mouse = assembly.Assembly()
-
+async def main():
+    asyncio.create_task(mouse.left_encoder.monitor())
+    asyncio.create_task(mouse.right_encoder.monitor())
     while True:
         mouse.move_forward()
         time.sleep(2)
@@ -21,4 +21,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    mouse = assembly.Assembly()
+    asyncio.run(main())
