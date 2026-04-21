@@ -37,6 +37,22 @@ This README briefly describes what each folder does, how to run the simulator, k
 		 - `code.py` — a short demo script that instantiates `Assembly` and runs a brief forward/back motion.
 	 - Notes: This code targets CircuitPython on a Pico and depends on Adafruit libraries (e.g., `adafruit_bno055`, `adafruit_vl53l1x`, `adafruit_displayio_ssd1306`). It is prototype-level and requires small fixes to run on hardware.
 
+System Setup
+----------------
+1. Install CircuitPython on a Pico using: https://circuitpython.org/board/raspberry_pi_pico/ 
+2. Clone this repo on a laptop.
+3. depending on your OS, you need to open a specific type of terminal.
+	- Windows: Open Git Bash.
+	- macOS/Linux: Open Standard Terminal.
+4. Run shell script: "./transfer.sh /d". 
+	- The first argument accesses the shell script, make sure that the shell script is in the root folder where the terminal is located. 
+	- The second argument "/d", is the letter of the drive the board shows up as when plugged in. If it is a different letter, change the argument accordingly. The drive should show up as "CIRCUITPY (E:)". The letter in the script should be lowercase.
+
+Making Changes
+----------------
+1. When testing, make all changes in the repo, NOT the pico drive. When you want to test the changes, run the shell script to transfer the updated code to the pico drive.
+2. When done, commit and push changes to the repo.
+
 ## Component Usage
 
 ### IMU 
@@ -80,6 +96,11 @@ Required Packages
 |                       |          time             |
 |                       | adafruit_vl53l1x (ToF sensor) |
 |                       |    adafruit_bno055 (IMU)  |
+
+
+
+
+	
 
 
 Authors
