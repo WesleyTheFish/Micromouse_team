@@ -4,18 +4,19 @@ import asyncio
 
 async def control():
     while True:
-        mouse.move_forward(10000)
-        await asyncio.sleep(2)
-        mouse.stop_motors()
-        await asyncio.sleep(1)
-        mouse.move_forward(40000)
-        await asyncio.sleep(2)
-        mouse.stop_motors()
-        # print("IMU gyro: " + mouse.imu.getGyroscope())
-        print(f"Left encoder: {mouse.left_encoder.read()}")
-        print(f"Right encoder: {mouse.right_encoder.read()}")
-        # print("Distance sensor: " + mouse.distance.get_distance())
-        await asyncio.sleep(1)
+        pass
+        # mouse.move_forward(10000)
+        # await asyncio.sleep(20)
+        # mouse.stop_motors()
+        # await asyncio.sleep(1)
+        # mouse.move_forward(40000)
+        # await asyncio.sleep(2)
+        # mouse.stop_motors()
+        # # print("IMU gyro: " + mouse.imu.getGyroscope())
+        # # print(f"Left encoder: {mouse.left_encoder.read()}")
+        # # print(f"Right encoder: {mouse.right_encoder.read()}")
+        # # print("Distance sensor: " + mouse.distance.get_distance())
+        # await asyncio.sleep(1)
 
 async def main():
     left_encoder = asyncio.create_task(mouse.left_encoder.monitor())
@@ -27,4 +28,10 @@ async def main():
 
 if __name__ == "__main__":
     mouse = assembly.Assembly()
-    asyncio.run(main())
+
+    while True:
+        distance = mouse.distance.get_distance()
+        print(f"Distance sensor: {distance}")
+        time.sleep(0.5)
+
+    # asyncio.run(main())
