@@ -18,20 +18,32 @@ async def control():
         # # print("Distance sensor: " + mouse.distance.get_distance())
         # await asyncio.sleep(1)
 
-async def main():
-    left_encoder = asyncio.create_task(mouse.left_encoder.monitor())
-    right_encoder = asyncio.create_task(mouse.right_encoder.monitor())
-    # give encoder tasks a moment to start and sample initial states
-    await asyncio.sleep(0.01)
-    primary = asyncio.create_task(control())
-    await asyncio.gather(left_encoder, right_encoder, primary)
+# async def main():
+#     left_encoder = asyncio.create_task(mouse.left_encoder.monitor())
+#     right_encoder = asyncio.create_task(mouse.right_encoder.monitor())
+#     # give encoder tasks a moment to start and sample initial states
+#     await asyncio.sleep(0.01)
+#     primary = asyncio.create_task(control())
+#     await asyncio.gather(left_encoder, right_encoder, primary)
 
 if __name__ == "__main__":
     mouse = assembly.Assembly()
-
     while True:
-        distance = mouse.distance.get_distance()
-        print(f"Distance sensor: {distance}")
-        time.sleep(0.5)
+        mouse.move_forward()
+        distance_front = mouse.front_distance.get_distance()
+        
+        if(distance_front < 20 and distance_front != -1):
+            mouse.stop_motors()
+            print("stopped")
+            break
+    
+        # mouse.left_distance.get_distance()
+        # mouse.front_distance.get_distance()
+
+    # while True:
+    #     distance = mouse.distance.get_distance()
+    #     print(f"Distance sensor: {distance}")
+    #     time.sleep(0.5)S
+
 
     # asyncio.run(main())

@@ -18,6 +18,7 @@ class Motor:
     def move_forward(self, dir, speed=65000, ):
         self.motor_a.value, self.motor_b.value = dir
         self.enable_pin.duty_cycle = speed
+        # print(f"Motor moving forward with speed: {speed}")
 
     def move_backward(self, dir, speed=65000):
         self.motor_a.value, self.motor_b.value = dir

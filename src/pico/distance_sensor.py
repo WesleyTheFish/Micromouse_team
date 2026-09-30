@@ -1,16 +1,18 @@
-import adafruit_vl53l1x # type: ignore
-import busio # type: ignore
+import busio  # type: ignore
+import vl53l4cx  # type: ignore
 
 class DistanceSensor:
-    def __init__(self, sda, slc):
-        i2c = busio.I2C(sda=sda, scl=slc)
-        self.sensor = adafruit_vl53l1x.VL53L1X(i2c)
+    def __init__(self, sda, scl):
+        i2c = busio.I2C(sda=sda, scl=scl)
+        self.sensor = vl53l4cx.VL53L4CX(i2c)
+        self.sensor.distance_mode = 1   # 1 = short, 2 = long
+        self.sensor.timing_budget = 50
         self.sensor.start_ranging()
 
     def get_distance(self):
         if self.sensor.data_ready:
-            data = self.sensor.distance
+            data = self.sensor.distance  # in cm
             self.sensor.clear_interrupt()
+            print(f"Distance sensor: {data}")
             return data
-        else:
-            return -1
+        return -1
