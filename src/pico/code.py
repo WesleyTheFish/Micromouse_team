@@ -1,6 +1,9 @@
 import time
 import assembly
 import asyncio
+import digitalio
+import microcontroller
+import board
 
 async def control():
     while True:
@@ -28,17 +31,35 @@ async def control():
 
 if __name__ == "__main__":
     mouse = assembly.Assembly()
+
+    # button setup
+    button = digitalio.DigitalInOut(board.GP6)
+    button.direction = digitalio.Direction.INPUT
+    button.pull = digitalio.Pull.UP
+
     while True:
-        mouse.move_forward()
-        distance_front = mouse.front_distance.get_distance()
-        
-        if(distance_front < 20 and distance_front != -1):
+        if button.value:
+            print("Button pressed, resetting...")
             mouse.stop_motors()
-            print("stopped")
-            break
+            time.sleep(1)
+            # microcontroller.reset()
+
+        # gyro_x, gyro_y, gyro_z = mouse.imu.getEuler()
+        # print(f"IMU euler: X={gyro_x:.2f}")
+
+
+        print(f"Right distance: {mouse.right_distance.get_distance()}")
+        # print("test")
+        
+        
+        # if(distance_front < 5 and distance_front != -1):
+        #     # mouse.stop_motors()
+        #     print("stopped")
+        #     break
     
         # mouse.left_distance.get_distance()
         # mouse.front_distance.get_distance()
+        # mouse.right_encoder.monitor2()
 
     # while True:
     #     distance = mouse.distance.get_distance()

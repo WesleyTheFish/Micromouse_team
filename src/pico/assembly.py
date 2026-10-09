@@ -20,14 +20,15 @@ class Assembly:
         # Encoders
         # self.right_encoder = encoder.Encoder(board.GP18, board.GP17)
         # self.left_encoder = encoder.Encoder(board.GP12, board.GP3)
+    
 
         # IMU
-        # self.imu = imu.IMU(board.GP4, board.GP5)
+        self.imu = imu.IMU(board.GP26, board.GP27)
 
         # Distance Sensor
-        self.left_distance = distance_sensor.DistanceSensor(board.GP2, board.GP3)
-        self.front_distance = distance_sensor.DistanceSensor(board.GP4, board.GP5)
-        # self.right_distance = distance_sensor.DistanceSensor(board.GP17, board.GP18)
+        # self.left_distance = distance_sensor.DistanceSensor(board.GP14, board.GP15)
+        # self.front_distance = distance_sensor.DistanceSensor(board.GP4, board.GP5)
+        self.right_distance = distance_sensor.DistanceSensor(board.GP17, board.GP18)
 
 
 
