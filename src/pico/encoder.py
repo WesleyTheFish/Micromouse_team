@@ -4,6 +4,37 @@ import rotaryio
 import time
 
 class Encoder:
+    def __init__(self, pin_a, pin_b, invert=False):
+        # divisor=1: one count per quadrature edge (default is 4, one per detent, too coarse here)
+        self._enc = rotaryio.IncrementalEncoder(pin_a, pin_b, divisor=1)
+        self._sign = -1 if invert else 1
+        self._offset = 0
+        self._last_pos = 0
+        self._last_time = time.monotonic()
+
+    @property
+    def position(self):
+        """Signed tick count since last reset."""
+        return self._sign * self._enc.position - self._offset
+
+    def reset(self):
+        self._offset = self._sign * self._enc.position
+        self._last_pos = 0
+        self._last_time = time.monotonic()
+
+    def get_speed(self):
+        """Ticks per second since the last call to get_speed()."""
+        now = time.monotonic()
+        pos = self.position
+        dt = now - self._last_time
+        speed = (pos - self._last_pos) / dt if dt > 0 else 0
+        self._last_pos = pos
+        self._last_time = now
+        return speed
+
+
+
+"""class Encoder:
     def __init__(self, pin1, pin2):
         self.encoder = rotaryio.IncrementalEncoder(pin1, pin2)
         # self.encoder1 = self.pin_init(pin1)
@@ -52,3 +83,5 @@ class Encoder:
                 self.last_state = current_state
 
             # await asyncio.sleep(0.001)s
+
+"""

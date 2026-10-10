@@ -19,35 +19,12 @@ def print_side_distances(mouse):
     if measurements:
         print(" | ".join(measurements))
 
-
 if __name__ == "__main__":
     mouse = assembly.Assembly()
 
-    # button setup
     button = digitalio.DigitalInOut(board.GP6)
     button.direction = digitalio.Direction.INPUT
     button.pull = digitalio.Pull.UP
 
-
-
-    mouse.turn(90)
-
-    while True:
-        # print_side_distances(mouse)
-        # time.sleep(0.05)
-
-        if button.value:
-            print("Button pressed, resetting...")
-            mouse.stop_motors()
-            time.sleep(1)
-            microcontroller.reset()
-
-
-        
-        # mouse.move_forward()
-        
-        # if(distance_front < 15 and distance_front != -1):
-        #     mouse.stop_motors()
-        #     print("stopped")
-        #     time.sleep(1)
-        #     break
+    mouse.move_forward_distance(300)
+    
