@@ -4,7 +4,7 @@
 # Usage: <path_to_this_file> <path_to_pico_root>
 # Example: ./transfer.sh /e
 
-PROJECT_DIR="./src/pico"
+PROJECT_DIR="./src/integrated"
 
 # Check if destination directory parameter was provided
 if [ -z "$1" ]; then
