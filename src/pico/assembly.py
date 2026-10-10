@@ -6,6 +6,7 @@ import imu
 import distance_sensor
 import busio
 import bitbangio
+import time
 
 # Define directions
 
@@ -47,23 +48,21 @@ class Assembly:
         self.motor_right.stop()
         self.motor_left.stop()
 
-    
-
     def turn(self, angle, speed=(DEFAULT_POWER)):
         current_heading = self.imu.getEuler()[0]
-        target_heading = (self.heading + angle)
+        target_heading = (current_heading + angle) % 360
         self.motor_right.move_backward(speed)
         self.motor_left.move_forward(speed)
 
-        while current_heading < target_heading-10 or current_heading > target_heading+10:
+        while abs((target_heading - current_heading + 180) % 360 - 180) > 5:
             current_heading = self.imu.getEuler()[0]
+            time.sleep(0.01)
 
         # Stop the motors
         print(f"Turned {angle} degrees. Current heading: {current_heading}")
         self.stop_motors()
 
-        self.heading = target_heading  # Update the current heading after the turn
+        self.heading = current_heading  # Keep software state synchronized with the IMU
 
 
         
-
