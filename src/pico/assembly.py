@@ -11,6 +11,13 @@ import time
 # Define directions
 
 DEFAULT_POWER = 7000
+
+TURN_KP = 200      # duty cycle per degree of error
+TURN_KI = 0        # leave at 0 until kp/kd are tuned
+TURN_KD = 30       # damps overshoot
+TURN_MAX = 15000   # max turn duty cycle (of 65535)
+TURN_MIN = 10000    # min duty cycle that still gets the wheels moving
+TURN_TOLERANCE = 1 # degrees
 # 65000
 
 class Assembly:
@@ -48,21 +55,102 @@ class Assembly:
         self.motor_right.stop()
         self.motor_left.stop()
 
-    def turn(self, angle, speed=(DEFAULT_POWER)):
-        current_heading = self.imu.getEuler()[0]
-        target_heading = (current_heading + angle) % 360
-        self.motor_right.move_backward(speed)
-        self.motor_left.move_forward(speed)
+    # def turn(self, angle, speed=(DEFAULT_POWER)):
+    #     current_heading = self.imu.getEuler()[0]
+    #     target_heading = (current_heading + angle) % 360
+    #     self.motor_right.move_backward(speed)
+    #     self.motor_left.move_forward(speed)
 
-        while abs((target_heading - current_heading + 180) % 360 - 180) > 5:
-            current_heading = self.imu.getEuler()[0]
-            time.sleep(0.01)
+    #     while abs((target_heading - current_heading + 180) % 360 - 180) > 5:
+    #         current_heading = self.imu.getEuler()[0]
+    #         time.sleep(0.01)
 
-        # Stop the motors
-        print(f"Turned {angle} degrees. Current heading: {current_heading}")
+    #     # Stop the motors
+    #     print(f"Turned {angle} degrees. Current heading: {current_heading}")
+    #     self.stop_motors()
+
+    #     self.heading = current_heading  # Keep software state synchronized with the IMU
+
+
+   
+
+
+    def turn(self, angle, timeout=4.0):
+        """Turn `angle` degrees (positive = clockwise) using a PID loop on IMU heading."""
+
+        def wrap(a):
+            # Shortest signed difference, in [-180, 180)
+            return (a + 180) % 360 - 180
+
+        def read_heading():
+            # BNO055 occasionally returns None; retry briefly
+            for _ in range(5):
+                euler = self.imu.getEuler()
+                if euler is not None and euler[0] is not None:
+                    return euler[0]
+            return None
+
+        heading = read_heading()
+        if heading is None:
+            print("IMU read failed, aborting turn")
+            return
+
+        target = (heading + angle) % 360
+        integral = 0.0
+        prev_error = wrap(target - heading)
+        prev_time = time.monotonic()
+        start_time = prev_time
+        settled = 0
+
+        while True:
+            now = time.monotonic()
+            dt = now - prev_time
+            if dt <= 0:
+                continue
+
+            heading = read_heading()
+            if heading is None:
+                continue
+
+            error = wrap(target - heading)
+
+            # Finished once we've held within tolerance for a few consecutive reads
+            if abs(error) <= TURN_TOLERANCE:
+                self.stop_motors()
+                settled += 1
+                if settled >= 3:
+                    break
+                prev_error, prev_time = error, now
+                continue
+            settled = 0
+
+            if now - start_time > timeout:
+                print("Turn timed out")
+                break
+
+            # PID
+            integral += error * dt
+            integral = max(-150, min(150, integral))  # anti-windup
+            derivative = (error - prev_error) / dt
+            output = TURN_KP * error + TURN_KI * integral + TURN_KD * derivative
+
+            # Clamp, with a minimum so the motors overcome friction
+            power = min(TURN_MAX, max(TURN_MIN, abs(output)))
+            power = int(power)
+
+            if output > 0:   # clockwise: right wheel back, left wheel forward
+                self.motor_right.move_backward(power)
+                self.motor_left.move_forward(power)
+            else:            # counter-clockwise
+                self.motor_right.move_forward(power)
+                self.motor_left.move_backward(power)
+
+            prev_error, prev_time = error, now
+            time.sleep(0.005)
+
         self.stop_motors()
-
-        self.heading = current_heading  # Keep software state synchronized with the IMU
+        print(f"Turned {angle} degrees. Final heading: {heading}, error: {error}")
+        self.heading = heading
 
 
         
