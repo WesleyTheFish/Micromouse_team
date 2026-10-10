@@ -4,11 +4,13 @@ import motor
 import encoder
 import imu
 import distance_sensor
+import busio
+import bitbangio
 
 # Define directions
 CLOCKWISE = (True, False)  # FORWARD
 COUNTERCLOCKWISE = (False, True)  # BACKWARD
-DEFAULT_POWER = 30000
+DEFAULT_POWER = 7000
 # 65000
 
 class Assembly:
@@ -20,22 +22,26 @@ class Assembly:
         # Encoders
         # self.right_encoder = encoder.Encoder(board.GP18, board.GP17)
         # self.left_encoder = encoder.Encoder(board.GP12, board.GP3)
-    
+         
 
-        # IMU
-        self.imu = imu.IMU(board.GP26, board.GP27)
+        # IMU 
+        imu_i2c   = busio.I2C(scl=board.GP27, sda=board.GP26)   # I2C1 hardware
+        self.imu = imu.IMU(imu_i2c)  # I2C1 hardware
 
-        # Distance Sensor
-        # self.left_distance = distance_sensor.DistanceSensor(board.GP14, board.GP15)
-        # self.front_distance = distance_sensor.DistanceSensor(board.GP4, board.GP5)
-        self.right_distance = distance_sensor.DistanceSensor(board.GP17, board.GP18)
+        # # Distance Sensor
+        front_i2c = busio.I2C(scl=board.GP5,  sda=board.GP4)    # I2C0 hardware
+        left_i2c  = bitbangio.I2C(scl=board.GP3,  sda=board.GP2)   # software
+        right_i2c = bitbangio.I2C(scl=board.GP17, sda=board.GP16)  # software
+
+        self.front_distance = distance_sensor.DistanceSensor(front_i2c, address=0x29)
+        self.left_distance  = distance_sensor.DistanceSensor(left_i2c, address=0x29)
+        self.right_distance = distance_sensor.DistanceSensor(right_i2c, address=0x29)
 
 
 
     def move_forward(self, speed=DEFAULT_POWER):
-        self.motor_right.move_forward(CLOCKWISE, 30000)
-        self.motor_left.move_forward(CLOCKWISE, speed)
-        # print("Moving forward")
+        self.motor_right.move_forward(CLOCKWISE, speed+350)
+        self.motor_left.move_forward(COUNTERCLOCKWISE, speed)
 
     def move_backward(self, speed=DEFAULT_POWER):
         self.motor_right.move_backward(COUNTERCLOCKWISE, speed)

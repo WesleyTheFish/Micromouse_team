@@ -2,7 +2,7 @@
 
 # If on Windows, run from Git Bash
 # Usage: <path_to_this_file> <path_to_pico_root>
-# Example: ./transfer.sh /d
+# Example: ./transfer.sh /e
 
 PROJECT_DIR="./src/pico"
 
