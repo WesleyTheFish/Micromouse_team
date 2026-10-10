@@ -12,6 +12,6 @@ class DistanceSensor:
         if self.sensor.data_ready:
             data = self.sensor.distance  # in cm
             self.sensor.clear_interrupt()
-            print(f"Distance sensor: {data}")
+            # print(f"Distance sensor: {data}")
             return data
         return -1

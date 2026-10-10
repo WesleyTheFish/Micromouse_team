@@ -3,7 +3,7 @@ import pwmio # type: ignore
 
 
 class Motor:
-    def __init__(self, port_a, port_b, enable_pin):
+    def __init__(self,side, port_a, port_b, enable_pin):
         self.motor_a = digitalio.DigitalInOut(port_a)
         self.motor_a.direction = digitalio.Direction.OUTPUT
 
@@ -15,12 +15,25 @@ class Motor:
         # Initialize duty cycle to 0
         self.enable_pin.duty_cycle = 0
 
-    def move_forward(self, dir, speed=65000, ):
+        self.side = side
+
+        self.CLOCKWISE = (True, False)  # FORWARD
+        self.COUNTERCLOCKWISE = (False, True)  # BACKWARD
+
+    def move_forward(self, speed=65000 ):
+        if self.side == "right":
+            dir = self.CLOCKWISE
+        else:
+            dir = self.COUNTERCLOCKWISE
         self.motor_a.value, self.motor_b.value = dir
         self.enable_pin.duty_cycle = speed
         # print(f"Motor moving forward with speed: {speed}")
 
-    def move_backward(self, dir, speed=65000):
+    def move_backward(self, speed=65000):
+        if self.side == "right":
+            dir = self.COUNTERCLOCKWISE
+        else:
+            dir = self.CLOCKWISE
         self.motor_a.value, self.motor_b.value = dir
         self.enable_pin.duty_cycle = speed
 
